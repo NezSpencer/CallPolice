@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector android:exitFadeDuration="@android:integer/config_mediumAnimTime" xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true">
+        <color android:color="?attr/colorSurface" />
+    </item>
+    <item>
+        <color android:color="?android:attr/colorBackground" />
+    </item>
+</selector>

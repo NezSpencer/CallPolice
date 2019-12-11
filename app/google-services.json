@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "23163051869",
+    "firebase_url": "https://callpolice-a251c.firebaseio.com",
+    "project_id": "callpolice-a251c",
+    "storage_bucket": "callpolice-a251c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23163051869:android:c265720d69a27676e852b4",
+        "android_client_info": {
+          "package_name": "com.nezspencer.callpolice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "23163051869-sfj81eroukainqtci1jkae59su9r3k66.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nezspencer.callpolice",
+            "certificate_hash": "c78be32a982c693918954b561cc3fd2c7f0da30e"
+          }
+        },
+        {
+          "client_id": "23163051869-iidrnv2chnckorr1didrlagiotn1d4s7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk645VKcj-rsQo0WteOz2XgS1tKFMGYws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "23163051869-iidrnv2chnckorr1didrlagiotn1d4s7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

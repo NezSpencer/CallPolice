@@ -1,0 +1,16 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/red500</item>
+        <item name="colorPrimaryDark">@color/red800</item>
+        <item name="colorAccent">@color/brand_white</item>
+        <item name="colorOnPrimary">@color/brand_white</item>
+        <item name="colorOnSurface">@color/blue_grey</item>
+        <item name="colorSurface">@color/light_blue_grey</item>
+        <item name="android:colorBackground">@color/brand_white</item>
+        <item name="colorOnBackground">@color/brand_black</item>
+    </style>
+
+</resources>
