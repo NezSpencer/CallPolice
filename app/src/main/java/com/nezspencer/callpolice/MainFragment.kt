@@ -94,11 +94,14 @@ class MainFragment : Fragment() {
                     }
 
                     if (addresses.isEmpty()) {
-                        // no address found. Deactivate call nearby-police button
+                        //ToDo no address found. Deactivate call nearby-police button
                     } else {
                         val address = addresses[0]
                         userState = address.adminArea
-                        tv_location.text = "${address.subAdminArea}, $userState"
+                        tv_call.text = getString(
+                            R.string.call_police_btn_prompt,
+                            userState
+                        )
                         if (contactList.isNotEmpty() && userState != null) {
                             stateContact = findPhoneNumbersForUserState(userState!!)
                         }
