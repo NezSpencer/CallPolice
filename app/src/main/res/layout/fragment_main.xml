@@ -29,7 +29,7 @@
         android:background="@drawable/call_background"
         android:elevation="@dimen/default_elevation"
         android:gravity="center"
-        android:text="@string/call_police"
+        tools:text="@string/call_police_btn_prompt"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="@dimen/title_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
