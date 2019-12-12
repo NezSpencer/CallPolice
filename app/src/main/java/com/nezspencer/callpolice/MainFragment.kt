@@ -3,9 +3,6 @@ package com.nezspencer.callpolice
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
-import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
@@ -15,9 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -38,9 +33,18 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val client = LocationServices.getFusedLocationProviderClient(activity!!)
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10 * 1000 //10 seconds
         mainViewModel = ViewModelProviders.of(
             activity!!,
-            MainViewModelFactory(FirebaseDatabase.getInstance().reference)
+            MainViewModelFactory(
+                activity!!,
+                client,
+                Looper.getMainLooper(),
+                FirebaseDatabase.getInstance().reference
+            )
         )[MainViewModel::class.java]
         mainViewModel.firebaseLiveData.observe(this, Observer {
             it ?: return@Observer
@@ -72,44 +76,16 @@ class MainFragment : Fragment() {
     }
 
     private fun getLocationAddress() {
-        val client = LocationServices.getFusedLocationProviderClient(activity!!)
-        val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 10 * 1000 //10 seconds
-        val locationCallback = object : LocationCallback() {
-            override fun onLocationResult(p0: LocationResult?) {
-                p0 ?: return
-                var userLocation: Location? = null
-                for (location in p0.locations) {
-                    userLocation = location
-                    break
-                }
-                userLocation?.let {
-                    val geoCoder = Geocoder(activity!!, Locale.getDefault())
-                    var addresses = emptyList<Address>()
-                    try {
-                        addresses = geoCoder.getFromLocation(it.latitude, it.longitude, 1)
-                    } catch (ex: Exception) {
-
-                    }
-
-                    if (addresses.isEmpty()) {
-                        //ToDo no address found. Deactivate call nearby-police button
-                    } else {
-                        val address = addresses[0]
-                        userState = address.adminArea
-                        tv_call.text = getString(
-                            R.string.call_police_btn_prompt,
-                            userState
-                        )
-                        if (contactList.isNotEmpty() && userState != null) {
-                            stateContact = findPhoneNumbersForUserState(userState!!)
-                        }
-                    }
-                }
+        mainViewModel.locationLiveData.observe(this, Observer {
+            it ?: return@Observer
+            tv_call.text = getString(
+                R.string.call_police_btn_prompt,
+                it
+            )
+            if (contactList.isNotEmpty() && userState != null) {
+                stateContact = findPhoneNumbersForUserState(it)
             }
-        }
-        client.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        })
     }
 
     private fun findPhoneNumbersForUserState(state: String): ContactByState? {
