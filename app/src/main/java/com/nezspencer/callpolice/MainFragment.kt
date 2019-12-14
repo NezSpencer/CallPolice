@@ -16,13 +16,9 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_main.*
-import java.util.*
 
 class MainFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
-    private val contactList = mutableListOf<ContactByState>()
-    private var userState: String? = null
-    private var stateContact: ContactByState? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,6 +33,7 @@ class MainFragment : Fragment() {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 10 * 1000 //10 seconds
+
         mainViewModel = ViewModelProviders.of(
             activity!!,
             MainViewModelFactory(
@@ -46,10 +43,19 @@ class MainFragment : Fragment() {
                 FirebaseDatabase.getInstance().reference
             )
         )[MainViewModel::class.java]
+
         mainViewModel.firebaseLiveData.observe(this, Observer {
             it ?: return@Observer
-            contactList.clear()
-            contactList.addAll(it)
+        })
+
+        mainViewModel.locationContactsMediator.observe(this, Observer {
+            it ?: return@Observer
+            if (it) {
+                // location, contact and state data is ready
+                with(mainViewModel) {
+                    stateContact = findPhoneNumbersForUserState(userState!!)
+                }
+            }
         })
 
         tv_show_list.setOnClickListener {
@@ -59,7 +65,7 @@ class MainFragment : Fragment() {
                 .commit()
         }
         tv_call.setOnClickListener {
-            stateContact?.let {
+            mainViewModel.stateContact?.let {
                 makeDialIntent(it.phones[0])
             }
 
@@ -82,16 +88,7 @@ class MainFragment : Fragment() {
                 R.string.call_police_btn_prompt,
                 it
             )
-            if (contactList.isNotEmpty() && userState != null) {
-                stateContact = findPhoneNumbersForUserState(it)
-            }
         })
-    }
-
-    private fun findPhoneNumbersForUserState(state: String): ContactByState? {
-        return contactList.find {
-            it.state.toLowerCase(Locale.ENGLISH) == state.toLowerCase(Locale.ENGLISH)
-        }
     }
 
     private fun makeDialIntent(phoneNumber: String) {
