@@ -1,6 +1,7 @@
 package com.nezspencer.callpolice
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,8 +94,11 @@ class GroupedContactListAdapter(
     inner class GroupHolder(private val stateView: View) {
         fun bind(state: String, isSelected: Boolean) {
             stateView.tv_state.text = state.capitalize()
-            stateView.tv_state.isSelected = isSelected
-            stateView.state_container.isSelected = isSelected
+            stateView.tv_state.typeface =
+                if (isSelected) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+            stateView.cb_indicator.isChecked = isSelected
+            stateView.tv_state.setTextColor(context.themeColor(if (isSelected) R.attr.colorOnBackground else R.attr.colorOnSurface))
+            stateView.state_container.setBackgroundColor(context.themeColor(if (isSelected) R.attr.colorSurface else android.R.attr.colorBackground))
         }
     }
 
