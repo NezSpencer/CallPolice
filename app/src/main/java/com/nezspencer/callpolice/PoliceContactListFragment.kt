@@ -7,7 +7,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -51,13 +50,6 @@ class PoliceContactListFragment : Fragment() {
         elv_police_contact_list.setAdapter(GroupedContactListAdapter(activity!!, contactList) {
             makeDialIntent(it)
         })
-        elv_police_contact_list.setOnGroupClickListener { parent, view, groupPosition, l ->
-            val index = parent.getFlatListPosition(
-                ExpandableListView.getPackedPositionForGroup(groupPosition)
-            )
-            parent.setItemChecked(index, parent.checkedItemPosition != index)
-            return@setOnGroupClickListener false
-        }
     }
 
     // Duplicated method from [MainFragment]
