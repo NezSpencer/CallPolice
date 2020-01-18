@@ -12,13 +12,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.item_user_state_phone.view.*
 
 class MainFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var currentStateContactsAdapter: StateContactsAdapter
+    private var selectedNumber: String? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,6 +48,11 @@ class MainFragment : Fragment() {
             )
         )[MainViewModel::class.java]
 
+        currentStateContactsAdapter = StateContactsAdapter {
+            selectedNumber = it
+        }
+        rv_state_contact.adapter = currentStateContactsAdapter
+
         mainViewModel.firebaseLiveData.observe(this, Observer {
             it ?: return@Observer
         })
@@ -54,19 +63,33 @@ class MainFragment : Fragment() {
                 // location, contact and state data is ready
                 with(mainViewModel) {
                     stateContact = findPhoneNumbersForUserState(userState!!)
+                    debug {
+                        if (stateContact == null) {
+                            stateContact = ContactByState(
+                                "California",
+                                mutableListOf(
+                                    "45744893939",
+                                    "47474783809",
+                                    "64539267254",
+                                    "44673737214"
+                                )
+                            )
+                        }
+                    }
+                    stateContact?.let { contact ->
+                        currentStateContactsAdapter.refreshList(
+                            prepareUserStateContacts(
+                                contact
+                            )
+                        )
+                    }
                 }
             }
         })
 
-        tv_show_list.setOnClickListener {
-            activity!!.supportFragmentManager.beginTransaction()
-                .replace(R.id.frame_content, PoliceContactListFragment())
-                .addToBackStack(PoliceContactListFragment::javaClass.name)
-                .commit()
-        }
         tv_call.setOnClickListener {
             mainViewModel.stateContact?.let {
-                makeDialIntent(it.phones[0])
+                makeDialIntent(selectedNumber ?: it.phones[0])
             }
 
         }
@@ -111,7 +134,55 @@ class MainFragment : Fragment() {
         }
     }
 
+    class StateContactsAdapter(private val onNumberSelected: (String) -> Unit) :
+        RecyclerView.Adapter<StateContactsAdapter.Holder>() {
+        private val items = mutableListOf<StateContact>()
+        private var lastSelectedItemPosition = 0
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+            return Holder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_user_state_phone,
+                    parent,
+                    false
+                )
+            )
+        }
+
+        fun refreshList(newItems: List<StateContact>) {
+            items.clear()
+            items.addAll(newItems)
+            notifyDataSetChanged()
+        }
+
+        override fun getItemCount() = items.size
+
+        override fun onBindViewHolder(holder: Holder, position: Int) {
+            holder.bind(items[position])
+        }
+
+        inner class Holder(private val rootView: View) : RecyclerView.ViewHolder(rootView) {
+            fun bind(contact: StateContact) {
+                with(rootView) {
+                    radio_phone.text = contact.phoneNumber
+                    radio_phone.isChecked = contact.isSelected
+                    radio_phone.setOnCheckedChangeListener { _, b ->
+                        if (b) {
+                            items[lastSelectedItemPosition].isSelected = false
+                            items[adapterPosition].isSelected = true
+                            lastSelectedItemPosition = adapterPosition
+                            onNumberSelected(contact.phoneNumber)
+                            notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    data class StateContact(val phoneNumber: String, var isSelected: Boolean)
+
     companion object {
         const val RC_LOCATION = 109
+        fun newInstance() = MainFragment()
     }
 }
