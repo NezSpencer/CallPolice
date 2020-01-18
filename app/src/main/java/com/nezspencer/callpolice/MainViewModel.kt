@@ -40,4 +40,7 @@ class MainViewModel(
             it.state.toLowerCase(Locale.ENGLISH) == state.toLowerCase(Locale.ENGLISH)
         }
     }
+
+    fun prepareUserStateContacts(contactByState: ContactByState) =
+        contactByState.phones.map { MainFragment.StateContact(it, contactByState.phones[0] == it) }
 }

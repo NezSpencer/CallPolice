@@ -9,3 +9,8 @@ fun Context.themeColor(@AttrRes attrRes: Int): Int {
     theme.resolveAttribute(attrRes, typedValue, true)
     return typedValue.data
 }
+
+fun debug(block: () -> Unit) {
+    if (BuildConfig.DEBUG)
+        block()
+}

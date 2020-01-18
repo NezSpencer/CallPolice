@@ -58,6 +58,9 @@ class PoliceContactListFragment : Fragment() {
         callIntent.data = Uri.parse("tel:$phoneNumber")
         if (callIntent.resolveActivity(activity!!.packageManager) != null)
             startActivity(callIntent)
+    }
 
+    companion object {
+        fun newInstance() = PoliceContactListFragment()
     }
 }

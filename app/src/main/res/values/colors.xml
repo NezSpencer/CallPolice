@@ -3,6 +3,7 @@
     <color name="red500">#f44336</color>
     <color name="red800">#c62828</color>
     <color name="brand_white">#FFFFFF</color>
+    <color name="smoke_white">#F5F5F5</color>
     <color name="blue_grey">#515f68</color>
     <color name="light_blue_grey">#eef4f8</color>
     <color name="brand_black">#000000</color>

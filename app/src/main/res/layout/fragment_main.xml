@@ -8,28 +8,12 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/tv_location"
-        android:layout_width="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/location_background"
-        android:text="@string/address_loading_prompt"
-        android:textColor="?attr/colorOnSurface"
-        android:paddingTop="8dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
-        android:layout_marginTop="@dimen/inter_view_margin"
-        android:layout_height="wrap_content" />
-
-    <TextView
         android:id="@+id/tv_call"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/call_background"
         android:elevation="@dimen/default_elevation"
         android:gravity="center"
-        tools:text="@string/call_police_btn_prompt"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="@dimen/title_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,27 +21,21 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent=".6" />
+        app:layout_constraintVertical_bias=".3"
+        app:layout_constraintWidth_percent=".6"
+        tools:text="@string/call_police_btn_prompt" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".85" />
 
-    <TextView
-        android:id="@+id/tv_show_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gutter_margin"
-        android:drawableEnd="@drawable/ic_list"
-        android:drawablePadding="@dimen/drawable_padding_large"
-        android:text="@string/show_all_prompt"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="@dimen/textSize_medium"
-        app:layout_constraintBottom_toTopOf="@id/guide_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_state_contact"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/gutter_margin_double"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tv_call"
+        app:layout_constraintStart_toStartOf="@id/tv_call"
+        app:layout_constraintTop_toBottomOf="@id/tv_call" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

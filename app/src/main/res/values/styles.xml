@@ -4,7 +4,8 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/red500</item>
-        <item name="colorPrimaryDark">@color/red800</item>
+        <item name="colorPrimaryDark">@color/smoke_white</item>
+        <item name="colorSecondaryVariant">@color/smoke_white</item>
         <item name="colorAccent">@color/brand_white</item>
         <item name="colorOnPrimary">@color/brand_white</item>
         <item name="colorOnSurface">@color/blue_grey</item>
