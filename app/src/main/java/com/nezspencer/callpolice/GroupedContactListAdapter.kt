@@ -1,6 +1,7 @@
 package com.nezspencer.callpolice
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
@@ -85,20 +86,42 @@ class GroupedContactListAdapter(
             groupView = convertView
             holder = convertView.tag as GroupHolder
         }
-        holder.bind(item.state, item.isSelected)
+        holder.bind(item, item.isSelected)
         return groupView
     }
 
     override fun getGroupCount() = contactByStateList.size
 
+    fun prepareShareIntentMessage(stateInfo: ContactByState): String {
+        val formattedNumberTextBuilder = StringBuilder()
+        for (number in stateInfo.phones) {
+            formattedNumberTextBuilder.append("$number\n")
+        }
+        return context.getString(
+            R.string.share_number_text,
+            stateInfo.state.capitalize(),
+            formattedNumberTextBuilder.toString()
+        )
+    }
+
     inner class GroupHolder(private val stateView: View) {
-        fun bind(state: String, isSelected: Boolean) {
-            stateView.tv_state.text = state.capitalize()
-            stateView.tv_state.typeface =
-                if (isSelected) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
-            stateView.cb_indicator.isChecked = isSelected
-            stateView.tv_state.setTextColor(context.themeColor(if (isSelected) R.attr.colorOnBackground else R.attr.colorOnSurface))
-            stateView.state_container.setBackgroundColor(context.themeColor(if (isSelected) R.attr.colorSurface else android.R.attr.colorBackground))
+        fun bind(stateInfo: ContactByState, isSelected: Boolean) {
+            with(stateView) {
+                tv_state.text = stateInfo.state.capitalize()
+                tv_state.typeface =
+                    if (isSelected) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+                cb_indicator.isChecked = isSelected
+                iv_share_numbers.showIf(isSelected)
+                tv_state.setTextColor(context.themeColor(if (isSelected) R.attr.colorOnBackground else R.attr.colorOnSurface))
+                state_container.setBackgroundColor(context.themeColor(if (isSelected) R.attr.colorSurface else android.R.attr.colorBackground))
+
+                iv_share_numbers.setBlockingClickListener {
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    shareIntent.type = "text/plain"
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, prepareShareIntentMessage(stateInfo))
+                    context.startActivity(shareIntent)
+                }
+            }
         }
     }
 

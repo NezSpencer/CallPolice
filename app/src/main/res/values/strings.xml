@@ -3,4 +3,5 @@
     <string name="call_police_btn_prompt">Call \n%s state \nPolice!</string>
     <string name="show_all_prompt">Show all</string>
     <string name="address_loading_prompt">fetching address&#8230;</string>
+    <string name="share_number_text">%1$s state police numbers:\n%2$s</string>
 </resources>

@@ -25,6 +25,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Abuja" />
 
+    <ImageView
+        android:id="@+id/iv_share_numbers"
+        android:src="@drawable/ic_share_black"
+        android:tint="?attr/colorOnSurface"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/cb_indicator"
+        app:layout_constraintTop_toTopOf="@id/tv_state"
+        android:layout_marginEnd="@dimen/gutter_margin_double"
+        app:layout_constraintBottom_toBottomOf="@id/tv_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <CheckBox
         android:id="@+id/cb_indicator"
         android:layout_width="@dimen/tiny_icon_size"
