@@ -12,17 +12,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.android.synthetic.main.item_user_state_phone.view.*
 
 class MainFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var currentStateContactsAdapter: StateContactsAdapter
-    private var selectedNumber: String? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,11 +44,6 @@ class MainFragment : Fragment() {
             )
         )[MainViewModel::class.java]
 
-        currentStateContactsAdapter = StateContactsAdapter {
-            selectedNumber = it
-        }
-        rv_state_contact.adapter = currentStateContactsAdapter
-
         mainViewModel.firebaseLiveData.observe(this, Observer {
             it ?: return@Observer
         })
@@ -76,20 +67,17 @@ class MainFragment : Fragment() {
                             )
                         }
                     }
-                    stateContact?.let { contact ->
-                        currentStateContactsAdapter.refreshList(
-                            prepareUserStateContacts(
-                                contact
-                            )
-                        )
-                    }
                 }
             }
         })
 
         tv_call.setOnClickListener {
             mainViewModel.stateContact?.let {
-                makeDialIntent(selectedNumber ?: it.phones[0])
+                PhoneNumberListDialogFragment.display(
+                    activity!!.supportFragmentManager,
+                    mainViewModel.prepareUserStateContacts(it)
+                    , ::makeDialIntent
+                )
             }
 
         }
@@ -130,51 +118,6 @@ class MainFragment : Fragment() {
         if (requestCode == RC_LOCATION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLocationAddress()
-            }
-        }
-    }
-
-    class StateContactsAdapter(private val onNumberSelected: (String) -> Unit) :
-        RecyclerView.Adapter<StateContactsAdapter.Holder>() {
-        private val items = mutableListOf<StateContact>()
-        private var lastSelectedItemPosition = 0
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-            return Holder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_user_state_phone,
-                    parent,
-                    false
-                )
-            )
-        }
-
-        fun refreshList(newItems: List<StateContact>) {
-            items.clear()
-            items.addAll(newItems)
-            notifyDataSetChanged()
-        }
-
-        override fun getItemCount() = items.size
-
-        override fun onBindViewHolder(holder: Holder, position: Int) {
-            holder.bind(items[position])
-        }
-
-        inner class Holder(private val rootView: View) : RecyclerView.ViewHolder(rootView) {
-            fun bind(contact: StateContact) {
-                with(rootView) {
-                    radio_phone.text = contact.phoneNumber
-                    radio_phone.isChecked = contact.isSelected
-                    radio_phone.setOnCheckedChangeListener { _, b ->
-                        if (b) {
-                            items[lastSelectedItemPosition].isSelected = false
-                            items[adapterPosition].isSelected = true
-                            lastSelectedItemPosition = adapterPosition
-                            onNumberSelected(contact.phoneNumber)
-                            notifyDataSetChanged()
-                        }
-                    }
-                }
             }
         }
     }
