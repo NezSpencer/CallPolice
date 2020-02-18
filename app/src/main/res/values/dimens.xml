@@ -4,10 +4,12 @@
     <dimen name="gutter_margin">16dp</dimen>
     <dimen name="gutter_margin_double">32dp</dimen>
     <dimen name="inter_view_margin">16dp</dimen>
+    <dimen name="intra_view_margin">8dp</dimen>
     <dimen name="drawable_padding_large">50dp</dimen>
     <dimen name="title_text_size">24sp</dimen>
     <dimen name="default_elevation">5dp</dimen>
     <dimen name="small_text_size">14sp</dimen>
     <dimen name="large_text_size">18sp</dimen>
     <dimen name="tiny_icon_size">24dp</dimen>
+    <dimen name="tiny_margin">4dp</dimen>
 </resources>

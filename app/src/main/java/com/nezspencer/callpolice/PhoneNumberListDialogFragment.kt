@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.dialog_phone_number_list.view.*
 
 class PhoneNumberListDialogFragment(
@@ -28,6 +30,12 @@ class PhoneNumberListDialogFragment(
             dismiss()
             numberSelectedListener(it)
         }.apply { notifyDataSetChanged() }
+        layoutView.rv_state_contact.addItemDecoration(
+            DividerItemDecoration(
+                activity!!,
+                LinearLayoutManager.VERTICAL
+            )
+        )
         val point = Point()
         dialog.window!!.windowManager.defaultDisplay.getSize(point)
         dialog.window?.setLayout((point.x * .5).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
