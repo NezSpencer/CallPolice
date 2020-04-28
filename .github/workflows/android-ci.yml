@@ -11,19 +11,13 @@ on:
 jobs:
   test:
     name: Run unit tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
-      ## Initial setup.
-      - uses: actions/checkout@v1
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-
       ## run unit tests
+      - uses: actions/checkout@v2
       - name: Unit tests
-        run: sudo bash ./gradlew test --stacktrace
+        run: bash ./gradlew test --stacktrace
 
   build:
     name: Build app
@@ -31,7 +25,7 @@ jobs:
 
     steps:
       ## Initial setup.
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -39,7 +33,7 @@ jobs:
 
       ## Check if we can build.
       - name: Build with Gradle
-        run: sudo ./gradlew build
+        run: bash ./gradlew build
 
       ## Cache gradle dependencies for faster builds
       - name: Cache Gradle packages
@@ -51,13 +45,17 @@ jobs:
 
       ## Generate debug/test apk
       - name: Generate debug build
-        run: sudo ./gradlew --no-daemon -g /opt/gcache assembleDebug --stacktrace
+        run: bash ./gradlew --no-daemon -g /opt/gcache :app:assembleDebug --stacktrace
+
+      #rename apk
+      - name: Rename apk
+        run: sudo mv app/build/outputs/apk/debug/*.apk app/build/outputs/apk/debug/callDebugPolice.apk
 
       ## Upload debug apk
       - name: Upload APK
         uses: actions/upload-artifact@v1
         with:
           name: app
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/
 
 

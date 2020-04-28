@@ -15,6 +15,16 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        applicationVariants.all { variant ->
+            variant.outputs.all { output ->
+                if (variant.buildType.name == "release") {
+                    outputFileName = new File("callPolice release " + getDate() + ".apk");
+                } else {
+                    outputFileName = new File("callPolice debug " + getDate() + ".apk");
+                }
+            }
+        }
     }
     buildTypes {
         release {
@@ -22,6 +32,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+static def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('dd-MM-yyyy hh:mm:ss a')
+    return formattedDate
 }
 
 dependencies {
