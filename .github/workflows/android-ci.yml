@@ -47,15 +47,15 @@ jobs:
       - name: Build with Gradle
         run: sudo ./gradlew build
 
-      ## Generate production apk
-      - name: Generate signed release build
-        run: ./gradlew --no-daemon -g /opt/gcache assembleDebug --stacktrace
+      ## Generate debug/test apk
+      - name: Generate debug build
+        run: sudo ./gradlew --no-daemon -g /opt/gcache assembleDebug --stacktrace
 
       ## Upload release apk
       - name: Upload APK
         uses: actions/upload-artifact@v1
         with:
           name: app
-          path: app/build/outputs/apk/release/callPolice-debug.apk
+          path: app/build/outputs/apk/debug/callPolice-debug.apk
 
 

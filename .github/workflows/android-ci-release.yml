@@ -48,7 +48,7 @@ jobs:
 
       ## Generate production apk
       - name: Generate signed release build
-        run: ./gradlew --no-daemon -g /opt/gcache assembleRelease --stacktrace
+        run: sudo ./gradlew --no-daemon -g /opt/gcache assembleRelease --stacktrace
 
       ## Upload release apk
       - name: Upload APK
