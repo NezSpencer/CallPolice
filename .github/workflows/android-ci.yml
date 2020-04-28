@@ -56,10 +56,8 @@ jobs:
       ## Upload debug apk
       - name: Upload APK
         uses: actions/upload-artifact@v1
-        working-directory: app/build/outputs/apk
-        run: sudo mkdir debug/
         with:
           name: app
-          path: debug/
+          path: app/build/outputs/apk/debug/
 
 
