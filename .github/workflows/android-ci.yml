@@ -1,15 +1,17 @@
 name: CallPolice debug
 
 on:
+  pull_request:
+    branches:
+      - 'master'
   push:
     branches:
-      - '!master'
-      - '*'
+      - 'master'
 
 jobs:
   test:
     name: Run unit tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       ## Initial setup.
@@ -25,7 +27,7 @@ jobs:
 
   build:
     name: Build app
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       ## Initial setup.
@@ -35,6 +37,10 @@ jobs:
         with:
           java-version: 1.8
 
+      ## Check if we can build.
+      - name: Build with Gradle
+        run: sudo ./gradlew build
+
       ## Cache gradle dependencies for faster builds
       - name: Cache Gradle packages
         uses: actions/cache@v1
@@ -43,19 +49,15 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      ## Check if we can build.
-      - name: Build with Gradle
-        run: sudo ./gradlew build
-
       ## Generate debug/test apk
       - name: Generate debug build
         run: sudo ./gradlew --no-daemon -g /opt/gcache assembleDebug --stacktrace
 
-      ## Upload release apk
+      ## Upload debug apk
       - name: Upload APK
         uses: actions/upload-artifact@v1
         with:
           name: app
-          path: output/apk/debug/callPolice-debug.apk
+          path: app/build/outputs/apk/
 
 
