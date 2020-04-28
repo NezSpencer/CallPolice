@@ -20,7 +20,7 @@ jobs:
 
       ## run unit tests
       - name: Unit tests
-        run: bash ./gradlew test --stacktrace
+        run: sudo bash ./gradlew test --stacktrace
 
   build:
     name: Build app
@@ -44,7 +44,7 @@ jobs:
 
       ## Check if we can build.
       - name: Build with Gradle
-        run: ./gradlew build
+        run: sudo ./gradlew build
 
       ## Generate production apk
       - name: Generate signed release build
