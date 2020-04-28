@@ -1,15 +1,14 @@
 name: CallPolice debug
 
 on:
-  push:
+  pull_request:
     branches:
-      - '!master'
-      - '*'
+      - 'master'
 
 jobs:
   test:
     name: Run unit tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       ## Initial setup.
@@ -21,11 +20,11 @@ jobs:
 
       ## run unit tests
       - name: Unit tests
-        run: sudo bash ./gradlew test --stacktrace
+        run: bash ./gradlew test --stacktrace
 
   build:
     name: Build app
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       ## Initial setup.
@@ -56,6 +55,6 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: app
-          path: output/apk/debug/callPolice-debug.apk
+          path: app/build/outputs/apk/debug/callPolice-debug.apk
 
 
