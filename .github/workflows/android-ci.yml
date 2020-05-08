@@ -1,10 +1,12 @@
 name: CallPolice debug
 
 on:
+  pull_request:
+    branches:
+      - 'master'
   push:
     branches:
-      - '!master'
-      - '*'
+      - 'master'
 
 jobs:
   test:
@@ -12,28 +14,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      ## Initial setup.
-      - uses: actions/checkout@v1
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-
       ## run unit tests
+      - uses: actions/checkout@v2
       - name: Unit tests
-        run: sudo bash ./gradlew test --stacktrace
+        run: bash ./gradlew test --stacktrace
 
   build:
     name: Build app
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       ## Initial setup.
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
+      ## Check if we can build.
+      - name: Build with Gradle
+        run: bash ./gradlew build
 
       ## Cache gradle dependencies for faster builds
       - name: Cache Gradle packages
@@ -43,19 +43,19 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      ## Check if we can build.
-      - name: Build with Gradle
-        run: sudo ./gradlew build
-
       ## Generate debug/test apk
       - name: Generate debug build
-        run: sudo ./gradlew --no-daemon -g /opt/gcache assembleDebug --stacktrace
+        run: bash ./gradlew --no-daemon -g /opt/gcache :app:assembleDebug --stacktrace
 
-      ## Upload release apk
+      #rename apk
+      - name: Rename apk
+        run: sudo mv app/build/outputs/apk/debug/*.apk app/build/outputs/apk/debug/callDebugPolice.apk
+
+      ## Upload debug apk
       - name: Upload APK
         uses: actions/upload-artifact@v1
         with:
           name: app
-          path: output/apk/debug/callPolice-debug.apk
+          path: app/build/outputs/apk/
 
 
