@@ -49,7 +49,7 @@ jobs:
 
       ## Generate debug/test apk
       - name: Generate debug build
-        run: sudo ./gradlew --no-daemon -g /opt/gcache assembleDebug --stacktrace
+        run: sudo ./gradlew --no-daemon -g /opt/gcache :app:assembleDebug --stacktrace
 
       ## Upload release apk
       - name: Upload APK
